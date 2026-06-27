@@ -126,7 +126,7 @@ public class DataSeeder implements CommandLineRunner {
                         "Gamer passionné. Vente et échange de consoles, jeux et équipement informatique."},
                 // Encore plus de vendeurs Togolais (Batch 2)
                 {"Traoré", "Ibrahim", "ibrahim@assigame.tg", "+22890080808", "Dékon, Lomé",
-                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+                        "https://images.unsplash.com/photo-1650667955633-df9d498a8e6b?q=80",
                         "Spécialiste en smartphones et ordinateurs portables de grandes marques."},
                 {"Kossiwa", "Chantal", "chantal@assigame.tg", "+22890090909", "Adakpamé, Lomé",
                         "https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=400&q=80",
@@ -135,7 +135,7 @@ public class DataSeeder implements CommandLineRunner {
                         "https://images.unsplash.com/photo-1600630242764-41cf7d951ac4?q=80",
                         "Vêtements pour hommes, chaussures en cuir et accessoires de mode."},
                 {"Dossou", "Abra", "abra@assigame.tg", "+22890111111", "Baguida, Lomé",
-                        "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&q=80",
+                        "https://images.unsplash.com/photo-1573497620013-7f7660da1a48?q=80",
                         "Produits de beauté, maquillage et soins capillaires."},
                 {"Ali", "Fousseni", "ali@assigame.tg", "+22890121212", "Agoè-Zongo, Lomé",
                         "https://images.unsplash.com/photo-1679480911476-3ee732578062?q=80",
