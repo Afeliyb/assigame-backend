@@ -47,16 +47,18 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
-        seedTypesUtilisateur();
-        List<CategorieProduit> categories = seedCategories();
-        if (utilisateurRepository.count() == 0) {
-            List<Utilisateur> vendeurs = seedVendeurs();
-            if (produitRepository.count() == 0) {
-                seedProduits(categories, vendeurs);
-            }
+public void run(String... args) {
+    seedTypesUtilisateur();
+    boolean usersWereEmpty = utilisateurRepository.count() == 0; // capturé AVANT de créer l'admin
+    seedAdmin();
+    List<CategorieProduit> categories = seedCategories();
+    if (usersWereEmpty) {
+        List<Utilisateur> vendeurs = seedVendeurs();
+        if (produitRepository.count() == 0) {
+            seedProduits(categories, vendeurs);
         }
     }
+} 
 
     private void seedTypesUtilisateur() {
         if (typeUtilisateurRepository.count() > 0) return;
@@ -71,6 +73,40 @@ public class DataSeeder implements CommandLineRunner {
         acheteur.setDescription_typeutilisateur("Particulier achetant des articles sur Assigame");
         typeUtilisateurRepository.save(acheteur);
     }
+
+    /**
+ * Crée le compte administrateur s'il n'existe pas encore.
+ * Idempotent : vérifie l'existence par email avant de créer, donc peut tourner
+ * à chaque redémarrage sans dupliquer le compte, même sur une base déjà peuplée (Neon).
+ *
+ * Identifiants : admin@assigame.tg / Assigame2026!Admin
+ */
+private void seedAdmin() {
+    String adminEmail = "admin@assigame.tg";
+    if (utilisateurRepository.existsByEmail(adminEmail)) {
+        return;
+    }
+
+    TypeUtilisateur typeAdmin = typeUtilisateurRepository.findAll().stream()
+            .filter(t -> "Admin".equalsIgnoreCase(t.getNom_typeutilisateur()))
+            .findFirst()
+            .orElseGet(() -> {
+                TypeUtilisateur type = new TypeUtilisateur();
+                type.setNom_typeutilisateur("Admin");
+                type.setDescription_typeutilisateur("Administrateur de la plateforme Assigame");
+                return typeUtilisateurRepository.save(type);
+            });
+
+    Utilisateur admin = new Utilisateur();
+    admin.setNom("Assigame");
+    admin.setPrenom("Admin");
+    admin.setEmail(adminEmail);
+    admin.setMotdepasse("Assigame2026!Admin"); // hashé en BCrypt par register()
+    admin.setTelephone("+22890000000");
+    admin.setLocalisation("Lomé");
+    admin.setTypeutilisateur(typeAdmin); // a déjà un id -> register() le respectera (pas de fallback "Vendeur")
+    utilisateurService.register(admin);
+}
 
     private List<CategorieProduit> seedCategories() {
         if (categorieProduitRepository.count() > 0) {
