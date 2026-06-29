@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.esgis2026.assigame.entity.Utilisateur;
@@ -91,10 +90,12 @@ public class UtilisateurController {
     // celle de /api/utilisateur/{id} afin de ne pas apparaître dans les sources HTML initiales.
     // Désormais accessible publiquement au clic (sans connexion obligatoire).
     @GetMapping("/{id}/contact")
-    public ResponseEntity<?> getContactInfo(@PathVariable Long id) {
-        return utilisateurService.getContactInfo(id)
-                .map(info -> ResponseEntity.ok((Object) info))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("message", "Vendeur introuvable.")));
-    }
+public ResponseEntity<?> getContactInfo(@PathVariable Long id) {
+    // Suppression du bloc de vérification 'if (requesterId == null ...)'
+    // Ainsi, tout le monde peut accéder au numéro
+    return utilisateurService.getContactInfo(id)
+            .map(info -> ResponseEntity.ok((Object) info))
+            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Vendeur introuvable.")));
+}
 }
