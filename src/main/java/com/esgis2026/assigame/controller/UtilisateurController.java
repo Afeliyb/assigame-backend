@@ -87,23 +87,11 @@ public class UtilisateurController {
     }
 
     // IMPORTANT - Exposé séparément du profil public pour protéger les données de contact.
-    // Retourne les coordonnées d'un vendeur (téléphone + WhatsApp) UNIQUEMENT si le
-    // demandeur (requesterId) est un utilisateur authentifié reconnu en base.
-    // Les visiteurs non connectés n'ont pas de requesterId → 401.
     // Les coordonnées ne transitent jamais dans la réponse de /api/produit/* ni dans
-    // celle de /api/utilisateur/{id} afin de ne pas apparaître dans les sources HTTP
-    // des pages publiques.
+    // celle de /api/utilisateur/{id} afin de ne pas apparaître dans les sources HTML initiales.
+    // Désormais accessible publiquement au clic (sans connexion obligatoire).
     @GetMapping("/{id}/contact")
-    public ResponseEntity<?> getContactInfo(
-            @PathVariable Long id,
-            @RequestParam(required = false) Long requesterId) {
-
-        // Pas de requesterId ou demandeur inconnu → refus
-        if (requesterId == null || !utilisateurService.existsById(requesterId)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Connectez-vous pour voir les coordonnées du vendeur."));
-        }
-
+    public ResponseEntity<?> getContactInfo(@PathVariable Long id) {
         return utilisateurService.getContactInfo(id)
                 .map(info -> ResponseEntity.ok((Object) info))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
